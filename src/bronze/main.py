@@ -6,6 +6,7 @@ import pandas as pd
 import time
 import socket
 from iex_webscrapping import IEXWebScrap
+from pvwatts import PVWattDataRead
 
 class BronzeZone:
     def __init__(self):
@@ -36,10 +37,16 @@ class BronzeZone:
         # Read the IEX Market Prices
         iex_webscrap = IEXWebScrap()
         market_price_df = iex_webscrap.api_invoke()
-        self.save_df(file_name=market_price_df, df = market_price_df)
+        self.save_df(file_name="iex_data.csv", df = market_price_df, index=True)
 
-    def save_df(self, file_name, df):
-        df.to_csv(file_name, index = False)
+    def save_df(self, file_name, df, index = False):
+        print(f"file name : {file_name}")
+        print(f"df : {df}")
+        df.to_csv(file_name, index = index)
+
+    def read_pv_watt(self):
+        pv_watt_obj = PVWattDataRead()
+        pv_watt_obj.pv_watt_read_data()
 
     def ftp_process(self):
         mock_ftp_obj = MockFTP()
@@ -54,8 +61,9 @@ class BronzeZone:
 
     def runner(self):
         self.prepare_mock_data()
-        self.ftp_process()
+        # self.ftp_process()
         self.read_iex_data()
+        self.read_pv_watt()
 
 
 if __name__ == "__main__":
