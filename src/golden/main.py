@@ -40,6 +40,11 @@ class Golden:
         """
         file_path = os.path.join("processed", "iex_data.csv")
         df = self.read_csv(file_name=file_path)
+        # Extract END time from "Time Block"
+        df["End Time"] = df["Time Block"].str.split("-").str[1]
+        # Combine Date and End Time
+        df["Timestamp"] = pd.to_datetime(df["Date"] + " " + df["End Time"], format="%d-%m-%Y %H:%M")
+        df = df[["Timestamp", "MCP (Rs/MWh) *"]]
         df.drop_duplicates(inplace=True)
         self.save_df(file_path=file_path, df=df)
 
@@ -60,10 +65,7 @@ class Golden:
         df = self.read_csv(file_name=file_path)
 
         # Create a timestamp column using Month, Day, and Hour
-        df["Timestamp"] = pd.to_datetime(
-            df[["Month", "Day", "Hour"]].astype(str).agg("-".join, axis=1),
-            format="%m-%d-%H",
-        )
+        df["Timestamp"] = df["Month"].astype(str) + "-" + df["Day"].astype(str) + " " + df["Hour"].astype(str) + ":00"
 
         # Compute Energy Yield (AC System Output in kWh)
         df["Energy_Yield_kWh"] = df["AC System Output (W)"] / 1000
