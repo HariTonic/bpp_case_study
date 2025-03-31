@@ -7,7 +7,7 @@ import pandas as pd
 
 class MockFTP:
     # Function to upload a file to an FTP server
-    def ftp_upload(self, file_name='mock_electricity_data.csv', ftp_host='127.0.0.1', ftp_port=21):
+    def ftp_upload(self, file_name='mock_electricity_data.csv', ftp_host='127.0.0.1', ftp_port=2121):
         """
         Uploads the file to the FTP server.
         """
@@ -15,12 +15,15 @@ class MockFTP:
         with ftplib.FTP() as ftp:
             ftp.connect(ftp_host, ftp_port)
             ftp.login('user', 'password')  # Login using credentials
+            ftp.set_pasv(True)
             with open(file_name, 'rb') as f:
+                print(f"file name ==== {file_name}")
+                print(os.path.exists(file_name))
                 ftp.storbinary(f'STOR {file_name}', f)
             print(f"File uploaded to FTP server: {file_name}")
 
     # Function to download a file from the FTP server
-    def ftp_download(self, file_name='mock_electricity_data.csv', ftp_host='127.0.0.1', ftp_port=21):
+    def ftp_download(self, file_name='mock_electricity_data.csv', ftp_host='127.0.0.1', ftp_port=2121):
         """
         Downloads the file from the FTP server.
         """
