@@ -1,13 +1,15 @@
+import pandas as pd
 import requests
 from bs4 import BeautifulSoup
-import pandas as pd
 
 
 class IEXWebScrap:
 
     def __init__(self):
         # Target URL
-        self.url = "https://www.iexindia.com/market-data/real-time-market/market-snapshot"
+        self.url = (
+            "https://www.iexindia.com/market-data/real-time-market/market-snapshot"
+        )
 
         # Set headers to mimic a real browser
         self.headers = {
@@ -16,20 +18,21 @@ class IEXWebScrap:
 
     def api_invoke(self):
         # Fetch the webpage
-        response = requests.get(url = self.url, headers=self.headers)\
-
+        response = requests.get(url=self.url, headers=self.headers)
 
         # Check if the request was successful
         if response.status_code == 200:
             soup = BeautifulSoup(response.text, "html.parser")
 
             # Find the div container
-            table_container = soup.find("div", class_="MuiTableContainer-root mui-1x1it2d")
+            table_container = soup.find(
+                "div", class_="MuiTableContainer-root mui-1x1it2d"
+            )
 
             if table_container:
                 # Find the table inside the container
                 table = table_container.find("table")
-                
+
                 if table:
                     # Extract table headers
                     headers = [th.text.strip() for th in table.find_all("th")]

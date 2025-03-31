@@ -1,17 +1,20 @@
+import socket
+import threading
+import time
+
+# from utils.s3 import S3
 from enrgy_consptn_data_mock import MockFTPData
 from ftp_mock import MockFTP
-import threading
-# from utils.s3 import S3
-import pandas as pd
-import time
-import socket
 from iex_webscrapping import IEXWebScrap
 from pvwatts import PVWattDataRead
 
+
 class BronzeZone:
     def __init__(self):
-        self.file_name = 'mock_electricity_data.csv'
-        self.file_relative_path = r"C:\Users\h.magendhiran\Documents\BPP\mock_electricity_data.csv"
+        self.file_name = "mock_electricity_data.csv"
+        self.file_relative_path = (
+            r"C:\Users\h.magendhiran\Documents\BPP\mock_electricity_data.csv"
+        )
 
     def wait_for_ftp(self, host="127.0.0.1", port=2121, timeout=5):
         start_time = time.time()
@@ -29,7 +32,7 @@ class BronzeZone:
         df = mock_ftp_data_obj.generate_mock_data()
 
         # df.to_csv(self.file_name, index=False)
-        self.save_df(file_name=self.file_name, df = df)
+        self.save_df(file_name=self.file_name, df=df)
 
         print(df)
 
@@ -37,12 +40,12 @@ class BronzeZone:
         # Read the IEX Market Prices
         iex_webscrap = IEXWebScrap()
         market_price_df = iex_webscrap.api_invoke()
-        self.save_df(file_name="iex_data.csv", df = market_price_df, index=True)
+        self.save_df(file_name="iex_data.csv", df=market_price_df, index=True)
 
-    def save_df(self, file_name, df, index = False):
+    def save_df(self, file_name, df, index=False):
         print(f"file name : {file_name}")
         print(f"df : {df}")
-        df.to_csv(file_name, index = index)
+        df.to_csv(file_name, index=index)
 
     def read_pv_watt(self):
         pv_watt_obj = PVWattDataRead()
@@ -58,6 +61,7 @@ class BronzeZone:
         self.wait_for_ftp()
         mock_ftp_obj.ftp_upload(file_name=self.file_relative_path)
         elect_data_df = mock_ftp_obj.ftp_download(file_name=self.file_name)
+        self.save_df(file_name=self.file_name, df=elect_data_df)
 
     def runner(self):
         self.prepare_mock_data()

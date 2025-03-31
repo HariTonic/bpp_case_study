@@ -1,9 +1,12 @@
-import boto3
-import pandas as pd
 from io import StringIO
 
+import boto3
+
+
 class S3:
-    def __init__(self, aws_access_key=None, aws_secret_key=None, region_name='us-east-1'):
+    def __init__(
+        self, aws_access_key=None, aws_secret_key=None, region_name="us-east-1"
+    ):
         """
         Initialize the S3Uploader class with optional AWS credentials.
 
@@ -28,13 +31,13 @@ class S3:
         # Create an S3 client
         if self.aws_access_key and self.aws_secret_key:
             s3 = boto3.client(
-                's3',
+                "s3",
                 aws_access_key_id=self.aws_access_key,
                 aws_secret_access_key=self.aws_secret_key,
-                region_name=self.region_name
+                region_name=self.region_name,
             )
         else:
-            s3 = boto3.client('s3', region_name=self.region_name)
+            s3 = boto3.client("s3", region_name=self.region_name)
 
         # Convert DataFrame to CSV in memory
         csv_buffer = StringIO()
