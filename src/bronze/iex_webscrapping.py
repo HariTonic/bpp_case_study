@@ -4,27 +4,41 @@ from bs4 import BeautifulSoup
 
 
 class IEXWebScrap:
+    """
+    A class to scrape real-time market data from the Indian Energy Exchange (IEX) website.
+    """
 
     def __init__(self):
-        # Target URL
+        """
+        Initialize the web scraper with target URL and headers.
+        """
+        # Target URL for market snapshot data
         self.url = (
             "https://www.iexindia.com/market-data/real-time-market/market-snapshot"
         )
 
-        # Set headers to mimic a real browser
+        # Headers to mimic a real browser request
         self.headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
         }
 
     def api_invoke(self):
-        # Fetch the webpage
+        """
+        Fetch market snapshot data from the IEX website and parse it into a Pandas DataFrame.
+
+        Returns
+        -------
+        pd.DataFrame or None
+            A DataFrame containing the extracted table data if successful, otherwise None.
+        """
+        # Send HTTP request to fetch the webpage
         response = requests.get(url=self.url, headers=self.headers)
 
-        # Check if the request was successful
+        # Verify successful response
         if response.status_code == 200:
             soup = BeautifulSoup(response.text, "html.parser")
 
-            # Find the div container
+            # Locate the table container
             table_container = soup.find(
                 "div", class_="MuiTableContainer-root mui-1x1it2d"
             )
@@ -44,7 +58,7 @@ class IEXWebScrap:
                         if cols:
                             data.append(cols)
 
-                    # Convert to Pandas DataFrame
+                    # Convert extracted data to Pandas DataFrame
                     df = pd.DataFrame(data, columns=headers)
                     return df
                 else:
@@ -53,3 +67,5 @@ class IEXWebScrap:
                 print("Table container not found.")
         else:
             print(f"Failed to fetch the page. Status Code: {response.status_code}")
+
+        return None

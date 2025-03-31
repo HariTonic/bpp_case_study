@@ -8,8 +8,21 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 
 class PVWattDataRead:
+    """
+    A class to automate data extraction from the PVWatts website using Selenium.
+    """
 
     def pv_watt_read_data(self):
+        """
+        Automates the process of searching for a location on the PVWatts website
+        and downloading the hourly data as a CSV file.
+
+        The downloaded file will be saved in the current script's directory.
+
+        Returns
+        -------
+        None
+        """
         # Get the current script directory
         script_dir = os.getcwd()
 
@@ -65,4 +78,5 @@ class PVWattDataRead:
             print(f"File downloaded to: {script_dir}")
 
         finally:
+            # Close the browser
             driver.quit()
