@@ -73,6 +73,8 @@ class Golden:
         # Select only relevant columns
         df = df[["Timestamp", "Energy_Yield_kWh"]]
 
+        print(df)
+
         df.drop_duplicates(inplace=True)
         self.save_df(file_path=file_path, df=df)
 
